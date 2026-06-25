@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多功能网页跳转</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a0a0f;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        .title {
+            text-align: center;
+            color: #00ffff;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.3);
+            letter-spacing: 4px;
+            animation: flicker 3s infinite alternate;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ff00ff;
+            font-size: 1rem;
+            margin-bottom: 40px;
+            text-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .btn {
+            position: relative;
+            padding: 18px 24px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            background: rgba(10, 10, 15, 0.8);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* KIMI - 青色 */
+        .btn-kimi {
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 255, 255, 0.05);
+        }
+        .btn-kimi:hover {
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.2);
+        }
+
+        /* 豆包 - 橙色 */
+        .btn-doubao {
+            border-color: #ff6b35;
+            color: #ff6b35;
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.2), inset 0 0 10px rgba(255, 107, 53, 0.05);
+        }
+        .btn-doubao:hover {
+            background: rgba(255, 107, 53, 0.1);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.4), 0 0 40px rgba(255, 107, 53, 0.2);
+        }
+
+        /* 谷歌镜像 - 绿色 */
+        .btn-google {
+            border-color: #00ff88;
+            color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2), inset 0 0 10px rgba(0, 255, 136, 0.05);
+        }
+        .btn-google:hover {
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4), 0 0 40px rgba(0, 255, 136, 0.2);
+        }
+
+        /* 百度学术 - 蓝色 */
+        .btn-baidu {
+            border-color: #3385ff;
+            color: #3385ff;
+            box-shadow: 0 0 10px rgba(51, 133, 255, 0.2), inset 0 0 10px rgba(51, 133, 255, 0.05);
+        }
+        .btn-baidu:hover {
+            background: rgba(51, 133, 255, 0.1);
+            box-shadow: 0 0 20px rgba(51, 133, 255, 0.4), 0 0 40px rgba(51, 133, 255, 0.2);
+        }
+
+        /* Github - 紫色 */
+        .btn-github {
+            border-color: #a855f7;
+            color: #a855f7;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2), inset 0 0 10px rgba(168, 85, 247, 0.05);
+        }
+        .btn-github:hover {
+            background: rgba(168, 85, 247, 0.1);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), 0 0 40px rgba(168, 85, 247, 0.2);
+        }
+
+        /* 知网 - 红色 */
+        .btn-cnki {
+            border-color: #ff3366;
+            color: #ff3366;
+            box-shadow: 0 0 10px rgba(255, 51, 102, 0.2), inset 0 0 10px rgba(255, 51, 102, 0.05);
+        }
+        .btn-cnki:hover {
+            background: rgba(255, 51, 102, 0.1);
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.4), 0 0 40px rgba(255, 51, 102, 0.2);
+        }
+
+        /* 秘塔AI - 黄色 */
+        .btn-metaso {
+            border-color: #facc15;
+            color: #facc15;
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.2), inset 0 0 10px rgba(250, 204, 21, 0.05);
+        }
+        .btn-metaso:hover {
+            background: rgba(250, 204, 21, 0.1);
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.4), 0 0 40px rgba(250, 204, 21, 0.2);
+        }
+
+        /* Deepseek - 白色/银色 */
+        .btn-deepseek {
+            border-color: #e2e8f0;
+            color: #e2e8f0;
+            box-shadow: 0 0 10px rgba(226, 232, 240, 0.2), inset 0 0 10px rgba(226, 232, 240, 0.05);
+        }
+        .btn-deepseek:hover {
+            background: rgba(226, 232, 240, 0.1);
+            box-shadow: 0 0 20px rgba(226, 232, 240, 0.4), 0 0 40px rgba(226, 232, 240, 0.2);
+        }
+
+        .icon {
+            font-size: 1.3rem;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #555;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        @media (max-width: 480px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .title {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* 扫描线效果 */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 255, 255, 0.02) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanline"></div>
+    <div class="container">
+        <h1 class="title">多功能网页跳转</h1>
+        <p class="subtitle">MULTI-FUNCTION NAVIGATION PORTAL</p>
+        
+        <div class="grid">
+            <a href="https://www.kimi.com/?chat_enter_method=new_chat" target="_blank" class="btn btn-kimi">
+                <span class="icon">🤖</span>
+                <span>KIMI</span>
+            </a>
+            
+            <a href="https://www.doubao.com/chat/" target="_blank" class="btn btn-doubao">
+                <span class="icon">🎭</span>
+                <span>豆包</span>
+            </a>
+            
+            <a href="https://xs.xasa.top/" target="_blank" class="btn btn-google">
+                <span class="icon">🔍</span>
+                <span>谷歌镜像</span>
+            </a>
+            
+            <a href="https://xueshu.baidu.com/" target="_blank" class="btn btn-baidu">
+                <span class="icon">📚</span>
+                <span>百度学术</span>
+            </a>
+            
+            <a href="https://github.com/" target="_blank" class="btn btn-github">
+                <span class="icon">🐙</span>
+                <span>GitHub</span>
+            </a>
+            
+            <a href="https://www.cnki.net/" target="_blank" class="btn btn-cnki">
+                <span class="icon">📖</span>
+                <span>知网</span>
+            </a>
+            
+            <a href="https://metaso.cn/" target="_blank" class="btn btn-metaso">
+                <span class="icon">🔮</span>
+                <span>秘塔AI</span>
+            </a>
+            
+            <a href="https://chat.deepseek.com/" target="_blank" class="btn btn-deepseek">
+                <span class="icon">🧠</span>
+                <span>Deepseek</span>
+            </a>
+        </div>
+        
+        <div class="footer">CYBERPUNK NAVIGATION v1.0</div>
+    </div>
+</body>
+</html>
